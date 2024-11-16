@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 5000;
 
 
 
-// start the server
+// start the server for sure
 
 app.listen(PORT, console.log(`server running on ${PORT}`))
 
