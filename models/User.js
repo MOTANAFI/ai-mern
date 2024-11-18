@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 
-//Schema 
+//*Schema 
 
 const userSchema = new mongoose.Schema({
     username:{
@@ -19,6 +19,9 @@ const userSchema = new mongoose.Schema({
     trialActive: {
         type: Boolean,
         default: Date,
+    },
+    trialExpires: {
+        type: Date
     },
     subscription: {
         type: String,
