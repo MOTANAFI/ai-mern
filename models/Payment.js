@@ -42,4 +42,4 @@ const paymentSchema = new mongoose.Schema(
 
 //! Compile to form the model
 
-const Payment = mongoose.mongo("Payment", paymentSchema);
+const Payment = mongoose.model("Payment", paymentSchema);

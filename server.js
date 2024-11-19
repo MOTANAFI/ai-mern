@@ -1,5 +1,6 @@
 const express = require('express');
 const usersRouter = require('./routes/usersRouter');
+require('./utils/connectDB')();
 
 const app = express();
 
