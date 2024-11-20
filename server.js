@@ -1,6 +1,10 @@
 const express = require('express');
+require("dotenv").config()
 const usersRouter = require('./routes/usersRouter');
+const { errorHandler } = require('./middlewares/errorMiddleware');
 require('./utils/connectDB')();
+
+errorHandler
 
 const app = express();
 
@@ -16,6 +20,9 @@ app.use(express.json())
 //*=== Routes ====
 
 app.use('/api/v1/users', usersRouter)
+// -- middleware 
+
+app.use(errorHandler)
 // start the server for sure
 
 app.listen(PORT, console.log(`server running on ${PORT}`))
