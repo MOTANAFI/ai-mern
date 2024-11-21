@@ -1,6 +1,8 @@
 const bcrypt = require("bcrypt");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/User");
+const jwt = require("jsonwebtoken");
+
 //*---- Registeration ---
 const register = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
@@ -62,7 +64,25 @@ const login = asyncHandler(async (req, res) => {
   }
 
   //*Generate token (jwt)
+  const token = jwt.sign(
+    {
+      id: user?._id,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "3d", // Token expires in 3 days
+    }
+  );
+ 
+
   //* set token into cookie (http only)
+  res.cookie('token', token, 
+  {
+    httpOnly:true,
+    secure:process.evn.NOD_ENV === "production",
+    sameSite: 'strict',
+    maxAge: 24 *60 * 60 * 1000, // day
+  })
 
   //* send the response
 
