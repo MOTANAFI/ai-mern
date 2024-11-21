@@ -19,7 +19,7 @@ const register = asyncHandler(async (req, res) => {
   }
   //* hash password
 
-  const salt = await bcrypt.genSalt(10);
+  const salt = await bcrypt.genSalt(8);
   const hashedPassword = await bcrypt.hash(password, salt);
 
   // create user
@@ -45,9 +45,39 @@ const register = asyncHandler(async (req, res) => {
   });
 });
 //*------ Login -----
+
+const login = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  //*check if user exist
+  const user = await User.findOne({ email });
+  if (!user) {
+    res.status(401);
+    throw new Error("Invalid email or password");
+  }
+  //* check if password is valid
+  const isMatch = await bcrypt.compare(password, user?.password);
+  if (!isMatch) {
+    res.status(401);
+    throw new Error("Invalid email or password");
+  }
+
+  //*Generate token (jwt)
+  //* set token into cookie (http only)
+
+  //* send the response
+
+  res.json({
+    status: "success",
+    _id: user?._id,
+    message: "Login success",
+    username: user?.username,
+    email: user?.email,
+  });
+});
 //*------ Logout -----
 //*------ Check user Auth Status -----
 
 module.exports = {
   register,
+  login,
 };
