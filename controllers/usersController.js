@@ -100,10 +100,26 @@ const logout = asyncHandler(async (req, res) => {
     message: "Logged out successfully"
   })
 });
+
+//* --- profile
+const userProfile = asyncHandler(async (req, res) => {
+  const id = "673d8cff9608781c6bb7158b"
+  const user = await User.findById(id).select("-password");
+  if(user) {
+    res.status(200).json({
+      status: "Sucess",
+      user
+    })
+  } else {
+    res.status(404)
+    throw new Error("User not found")
+  }
+})
 //*------ Check user Auth Status -----
 
 module.exports = {
   register,
   login,
-  logout
+  logout,
+  userProfile
 };
