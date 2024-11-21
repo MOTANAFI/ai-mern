@@ -73,16 +73,14 @@ const login = asyncHandler(async (req, res) => {
       expiresIn: "3d", // Token expires in 3 days
     }
   );
- 
 
   //* set token into cookie (http only)
-  res.cookie('token', token, 
-  {
-    httpOnly:true,
-    secure:process.evn.NOD_ENV === "production",
-    sameSite: 'strict',
-    maxAge: 24 *60 * 60 * 1000, // day
-  })
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 24 * 60 * 60 * 1000, // day
+  });
 
   //* send the response
 
@@ -95,9 +93,17 @@ const login = asyncHandler(async (req, res) => {
   });
 });
 //*------ Logout -----
+
+const logout = asyncHandler(async (req, res) => {
+  res.cookie("token", "", {maxAge: 1});
+  res.status(200).json({
+    message: "Logged out successfully"
+  })
+});
 //*------ Check user Auth Status -----
 
 module.exports = {
   register,
   login,
+  logout
 };
