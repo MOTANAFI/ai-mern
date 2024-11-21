@@ -73,6 +73,7 @@ const login = asyncHandler(async (req, res) => {
       expiresIn: "3d", // Token expires in 3 days
     }
   );
+  console.log(token)
 
   //* set token into cookie (http only)
   res.cookie("token", token, {
@@ -103,8 +104,9 @@ const logout = asyncHandler(async (req, res) => {
 
 //* --- profile
 const userProfile = asyncHandler(async (req, res) => {
-  const id = "673d8cff9608781c6bb7158b"
-  const user = await User.findById(id).select("-password");
+  // const id = "673d8cff9608781c6bb7158b"
+  console.log(req.user)
+  const user = await User.findById(req?.user?.id).select("-password");
   if(user) {
     res.status(200).json({
       status: "Sucess",
