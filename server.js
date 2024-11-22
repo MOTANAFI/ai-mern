@@ -3,6 +3,7 @@ const cookieParser = require("cookie-parser")
 require("dotenv").config()
 const usersRouter = require('./routes/usersRouter');
 const { errorHandler } = require('./middlewares/errorMiddleware');
+const geminiAIRouter = require('./routes/geminiAIRouter');
 require('./utils/connectDB')();
 
 errorHandler
@@ -22,6 +23,7 @@ app.use(cookieParser()) //* pass cooke automatically
 //*=== Routes ====
 
 app.use('/api/v1/users', usersRouter)
+app.use('/api/v1/geminiai', geminiAIRouter)
 // -- middleware 
 
 app.use(errorHandler)

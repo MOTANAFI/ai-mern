@@ -1,20 +1,40 @@
-const asyncHandler = require("express-async-handler");
+// const asyncHandler = require("express-async-handler");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const axios = require("axios");
 
-//** */======== GeminiAI Controller
+// Initialize the GoogleGenerativeAI instance
+const genAI = new GoogleGenerativeAI(
+  process.env.API_KEY // Ensure the API key is loaded correctly
+);
 
-// const GeminiAIConroller = asyncHandler(async (req, res) => {
+// Function to generate content
+const geminiAiConroller = async (req, res) => {
+  try {
+    // Define prompt and configuration
+    const { prompt } = req.body;
+    // const config = {
+    //   temperature: 0.9,
+    //   topP: 1,
+    //   topK: 1,
+    //   maxOutputTokens: 4096,
+    // };
 
-// })
+    // Specify the model
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-// Make sure to include these imports:
-// import { GoogleGenerativeAI } from "@google/generative-ai";
+    // Generate content
+    const result = await model.generateContent(prompt);
 
-const genAI = new GoogleGenerativeAI(process.env.API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    // Log the response text
+    console.log(result.response?.text || "No response generated.");
+    res.status(200).json({ content: result.response?.text || "No content generated." });
+  } catch (error) {
+    // Log the error details
+    console.error("Error generating content:", error.message);
+  }
+  res
+};
 
-const prompt = "Write a story about a magic backpack.";
-
-const result = await model.generateContent(prompt);
-console.log(result.response.text());
+// Execute the generation
+module.exports = {
+  geminiAiConroller,
+};
