@@ -22,3 +22,5 @@ const historySchema = new mongoose.Schema(
 //! Compile to form the model -- mern-ai-2015-1
 
 const ContentHistory = mongoose.model("ContentHistory", historySchema);
+
+module.exports = ContentHistory
