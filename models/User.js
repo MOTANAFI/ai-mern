@@ -31,13 +31,13 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ["Trial", "Free", "Base", "Premium"],
     },
-    apiRequsetCount: {
+    apiRequestCount: {
       type: Number,
       default: 0,
     },
     monthlyRequestCount: {
       type: Number,
-      default: 0,
+      default: 100, // 100 credit for the user
     },
     nextBillingDate: Date,
     payments: [
@@ -55,8 +55,14 @@ const userSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    toJSON: {virtuals: true},
+    toObject: {virtuals: true}
   }
 );
+// addign virtuals
+userSchema.virtual('isTrialActive').get(function() {
+  return this.trialActive && new Date() < this.trialExpires
+})
 
 //! Compile to form the model
 

@@ -4,7 +4,6 @@ const asyncHandler = require("express-async-handler");
 const ContentHistory = require("../models/ContentHistory");
 const User = require("../models/User");
 
-
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 
 const genAIController = asyncHandler(async (req, res) => {
@@ -19,11 +18,13 @@ const genAIController = asyncHandler(async (req, res) => {
   // create history
   const newContent = await ContentHistory.create({
     user: req?.user?._id,
-    content
+    content,
   });
   // push the text to the user
   const userFound = await User.findById(req?.user?.id);
   userFound.history.push(newContent?._id);
+  // udate the api request count
+  userFound.apiRequestCount += 1;
 
   await userFound.save();
 
