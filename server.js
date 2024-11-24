@@ -4,6 +4,7 @@ require("dotenv").config()
 const usersRouter = require('./routes/usersRouter');
 const { errorHandler } = require('./middlewares/errorMiddleware');
 const geminiAIRouter = require('./routes/geminiAIRouter');
+const stripeRouter = require('./routes/stripeRouter');
 require('./utils/connectDB')();
 
 errorHandler
@@ -24,6 +25,7 @@ app.use(cookieParser()) //* pass cooke automatically
 
 app.use('/api/v1/users', usersRouter)
 app.use('/api/v1/geminiai', geminiAIRouter)
+app.use('/api/v1/stripe', stripeRouter)
 // -- middleware 
 
 app.use(errorHandler)

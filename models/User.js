@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema(
     trialExpires: {
       type: Date,
     },
-    subscription: {
+    subscriptionPlan: {
       type: String,
       enum: ["Trial", "Free", "Base", "Premium"],
     },
@@ -55,14 +55,14 @@ const userSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-    toJSON: {virtuals: true},
-    toObject: {virtuals: true}
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
 // addign virtuals
-userSchema.virtual('isTrialActive').get(function() {
-  return this.trialActive && new Date() < this.trialExpires
-})
+userSchema.virtual("isTrialActive").get(function () {
+  return this.trialActive && new Date() < this.trialExpires;
+});
 
 //! Compile to form the model
 
