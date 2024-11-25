@@ -11,7 +11,7 @@ const stripePayment = asyncHandler(async (req, res) => {
   //Get the user
 
   const user = req?.user;
-  console.log(user);
+
   try {
     //create  payment intent
     const paymentIntent = await stripe.paymentIntents.create({
@@ -24,17 +24,29 @@ const stripePayment = asyncHandler(async (req, res) => {
         subscriptionPlan,
       },
     });
-    console.log(paymentIntent);
+
     // send the response
     res.json({
       clientSecret: paymentIntent?.client_secret,
       paymentId: paymentIntent?.id,
-      metadata: paymentIntent?.metadata
+      metadata: paymentIntent?.metadata,
     });
   } catch (error) {
-    console.log(error)
-    res.status(500).json({error: error})
+    res.status(500).json({ error: error });
   }
 });
+
+//* handle free subs.
+
+const freeSubscription = asyncHandler(async (req, res) => {
+  //Get the loggin user 
+  const user = req?.user;
+  //*Calculate the next billing date
+  //* Check if user account should be renew or not
+  //* Create new payment and save into DB
+  //* Update the user account
+  //* Send the response
+})
+
 
 module.exports = stripePayment;
