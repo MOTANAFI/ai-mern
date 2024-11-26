@@ -1,4 +1,5 @@
 const asyncHandler = require("express-async-handler");
+const { calculateNextBillingDate } = require("../utils/calculateNextBillingDate");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 //*---- Stripe payment
@@ -41,7 +42,9 @@ const stripePayment = asyncHandler(async (req, res) => {
 const freeSubscription = asyncHandler(async (req, res) => {
   //Get the loggin user 
   const user = req?.user;
+  console.log("free plan")
   //*Calculate the next billing date
+  calculateNextBillingDate()
   //* Check if user account should be renew or not
   //* Create new payment and save into DB
   //* Update the user account
@@ -49,4 +52,4 @@ const freeSubscription = asyncHandler(async (req, res) => {
 })
 
 
-module.exports = stripePayment;
+module.exports = {stripePayment, freeSubscription};
