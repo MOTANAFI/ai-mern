@@ -17,7 +17,7 @@ const paymentSchema = new mongoose.Schema(
       required: true,
     },
     status: {
-      type: Boolean,
+      type: String,
       default: "pending",
       required: true,
     },
@@ -43,3 +43,5 @@ const paymentSchema = new mongoose.Schema(
 //! Compile to form the model
 
 const Payment = mongoose.model("Payment", paymentSchema);
+
+module.exports = Payment

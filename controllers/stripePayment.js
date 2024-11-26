@@ -1,7 +1,10 @@
 const asyncHandler = require("express-async-handler");
-const { calculateNextBillingDate } = require("../utils/calculateNextBillingDate");
+const {
+  calculateNextBillingDate,
+} = require("../utils/calculateNextBillingDate");
 const { shouldRenewSubsPlan } = require("../utils/shouldRenewSubsPlan");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const Payment = require("../models/Payment");
 
 //*---- Stripe payment
 
@@ -41,34 +44,47 @@ const stripePayment = asyncHandler(async (req, res) => {
 //* handle free subs.
 
 const freeSubscription = asyncHandler(async (req, res) => {
-  //Get the loggin user 
+  //Get the loggin user
   const user = req?.user;
-  console.log("free plan")
+  console.log("free plan");
   //*Calculate the next billing date
-  
+
   //* Check if user account should be renew or not
   try {
-    if(shouldRenewSubsPlan(user)){
+    if (shouldRenewSubsPlan(user)) {
       //* Update the user account
-      user.subscriptionPlan = 'Free';
+      user.subscriptionPlan = "Free";
       user.monthlyRequestCount = 5;
       user.apiRequestCount = 0;
-      user.nextBillingDate = calculateNextBillingDate()
+      user.nextBillingDate = calculateNextBillingDate();
+      //* Create new payment and save into DB
+      const newPayment = await Payment.create({
+        user: user?._id,
+        subscriptionPlan: "Free",
+        amount: 0,
+        status: "success",
+        reference: Math.random().toString(36).substring(7),
+        monthlyRequestCount: 0,
+        currency: "usd",
+      });
+      user.payments.push(newPayment?._id);
       //* save user to db
       await user.save();
-      return res.json({
-        status: 'success',
-        message: "Subscription plan updated successfully", user
-      })
-      //* Create new payment and save into DB
+      res.json({
+        status: "success",
+        message: "Subscription plan updated successfully",
+        user,
+      });
       //* Send the response
-
     } else {
-      return res.status(403).json({error: 'Subscription nenewal not duel yet'}, user)
+      return res
+        .status(403)
+        .json({ error: "Subscription nenewal not due yet" });
     }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error });
+  }
+});
 
-  }catch (error) {}
-})
-
-
-module.exports = {stripePayment, freeSubscription};
+module.exports = { stripePayment, freeSubscription };
