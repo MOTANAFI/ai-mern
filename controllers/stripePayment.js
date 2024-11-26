@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const { calculateNextBillingDate } = require("../utils/calculateNextBillingDate");
+const { shouldRenewSubsPlan } = require("../utils/shouldRenewSubsPlan");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 //*---- Stripe payment
@@ -44,11 +45,29 @@ const freeSubscription = asyncHandler(async (req, res) => {
   const user = req?.user;
   console.log("free plan")
   //*Calculate the next billing date
-  calculateNextBillingDate()
+  
   //* Check if user account should be renew or not
-  //* Create new payment and save into DB
-  //* Update the user account
-  //* Send the response
+  try {
+    if(shouldRenewSubsPlan(user)){
+      //* Update the user account
+      user.subscriptionPlan = 'Free';
+      user.monthlyRequestCount = 5;
+      user.apiRequestCount = 0;
+      user.nextBillingDate = calculateNextBillingDate()
+      //* save user to db
+      await user.save();
+      return res.json({
+        status: 'success',
+        message: "Subscription plan updated successfully", user
+      })
+      //* Create new payment and save into DB
+      //* Send the response
+
+    } else {
+      return res.status(403).json({error: 'Subscription nenewal not duel yet'}, user)
+    }
+
+  }catch (error) {}
 })
 
 
