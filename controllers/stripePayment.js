@@ -77,7 +77,24 @@ const verifyPayment = asyncHandler(async (req, res) => {
         reference: paymentId
       })
 
-      
+      //* check for subscription
+
+      if(subscriptionPlan === 'Basic') {
+        // * update the user 
+        const updatedUser = await User.findByIdAndUpdate(userId, {
+          subscriptionPlan,
+          trailPeriod: 0,
+          nextBillingDate: calculateNextBillingDate(),
+          apiRequestCount: 0,
+          monthlyRequestCount:50,
+          $addToSet: {payments: newPayment?._id}
+        })
+        res.json({
+          status: true,
+          message: "Payment verified, user updated",
+          updatedUser
+        })
+      }
 
 
     }
