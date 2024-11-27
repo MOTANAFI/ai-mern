@@ -40,6 +40,52 @@ const stripePayment = asyncHandler(async (req, res) => {
     res.status(500).json({ error: error });
   }
 });
+//* --- Verify payment ------
+const verifyPayment = asyncHandler(async (req, res) => {
+  const { paymentId } = req.params;
+  try {
+    const paymentIntent = await stripe.paymentIntents.retrieve(paymentId);
+    console.log(paymentIntent);
+    if (paymentIntent.status === "succeeded") {
+      const metadata = paymentIntent.metatdata;
+      const subscriptionPlan = metadata?.subscriptionPlan;
+      const userEmail = metadata?.userEmail;
+      const userId = metadata?.userId;
+
+      // * find the user
+      const userFound = await User.findById(userId);
+      if(!userFound) {
+        return res.status(404).json({
+          status: "false",
+          message: "User not found"
+        })
+      }
+
+      //* Get the payment details
+      const amount = paymentIntent.amount / 100;
+      const currency = paymentIntent?.currency;
+      const paymentId = paymentIntent?.id
+      //** payment history
+
+      const newPayment = await Payment.create({
+        user: userId,
+        email: userEmail,
+        subscriptionPlan,
+        amount,
+        currency,
+        status,
+        reference: paymentId
+      })
+
+      
+
+
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error });
+  }
+});
 
 //* handle free subs.
 
@@ -87,4 +133,4 @@ const freeSubscription = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { stripePayment, freeSubscription };
+module.exports = { stripePayment, freeSubscription, verifyPayment };
