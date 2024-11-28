@@ -63,7 +63,7 @@ const verifyPayment = asyncHandler(async (req, res) => {
         });
       }
 
-      //* Get the payment details
+      //* Get the payment detail
       const amount = paymentIntent?.amount / 100;
       const currency = paymentIntent?.currency;
       const paymentId = paymentIntent?.id;
