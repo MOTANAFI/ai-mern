@@ -150,18 +150,53 @@ const verifyPayment = asyncHandler(async (req, res) => {
       const paymentId = paymentIntent?.id;
 
       //* create payment history;
-      const newPayment =  await Payment.create({
+      const newPayment = await Payment.create({
         user: userId,
         email: userEmail,
         subscriptionPlan,
         amount,
         currency,
-        status,
-        reference: paymentId
-      })
-      //* check for subscription paln 
-      if(subscriptionPlan === 'Basic') {
-        
+        status: 'success',
+        reference: paymentId,
+      });
+      //* check for subscription paln
+      if (subscriptionPlan === "Basic") {
+        const updatedUser = await User.findByIdAndUpdate(userId, {
+          subscriptionPlan,
+          trialPeriod: 0,
+          nextBillingDate: calculateNextBillingDate(),
+          apiRequestCount: 0,
+          monthlyRequestCount: 50,
+          subscriptionPlan: "Basic",
+          $addToSet: { payments: newPayment?._id },
+          
+        },
+        {new: true}
+        );
+        res.json({
+          status: true,
+          message: "Payment verified, user updated",
+          updatedUser
+        })
+      }
+      //* check for subscription premium plan
+      if (subscriptionPlan === "Premium") {
+        const updatedUser = await User.findByIdAndUpdate(userId, {
+          subscriptionPlan,
+          trialPeriod: 0,
+          nextBillingDate: calculateNextBillingDate(),
+          apiRequestCount: 0,
+          monthlyRequestCount: 100,
+          subscriptionPlan: "Premium",
+          $addToSet: { payments: newPayment?._id },
+        },
+        {new: true}
+        );
+        res.json({
+          status: true,
+          message: "Payment verified, user updated",
+          updatedUser
+        })
       }
     }
   } catch (error) {
