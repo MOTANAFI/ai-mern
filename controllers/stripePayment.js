@@ -41,21 +41,102 @@ const stripePayment = asyncHandler(async (req, res) => {
     res.status(500).json({ error: error });
   }
 });
-//* --- Verify payment ------
+//* --- Verify payment-1 ------
+// const verifyPayment = asyncHandler(async (req, res) => {
+//   const { paymentId } = req.params;
+//   try {
+//     const paymentIntent = await stripe.paymentIntents.retrieve(paymentId);
+
+//     if (paymentIntent.status === "succeeded") {
+//       const metadata = paymentIntent?.metadata;
+//       const subscriptionPlan = metadata?.subscriptionPlan;
+//       const userEmail = metadata?.userEmail;
+//       const userId = metadata?.userId;
+
+//       // * find the user
+//       const userFound = await User.findById(userId);
+//       console.log(userFound);
+//       if (!userFound) {
+//         return res.status(404).json({
+//           status: "false",
+//           message: "User not found",
+//         });
+//       }
+
+//       //* Get the payment detail
+//       const amount = paymentIntent?.amount / 100;
+//       const currency = paymentIntent?.currency;
+//       const paymentId = paymentIntent?.id;
+//       //** creat payment history
+
+//       const newPayment = await Payment.create({
+//         user: userId,
+//         email: userEmail,
+//         subscriptionPlan,
+//         amount,
+//         currency,
+//         status: "success",
+//         reference: paymentId,
+//       });
+
+//       //* check for subscription
+
+//       if (subscriptionPlan === "Basic") {
+//         // * update the user
+//         const updatedUser = await User.findByIdAndUpdate(userId, {
+//           subscriptionPlan,
+//           trialPeriod: 0,
+//           nextBillingDate: calculateNextBillingDate(),
+//           apiRequestCount: 0,
+//           monthlyRequestCount: 50,
+//           subscriptionPlan: "Basic",
+//           $addToSet: { payments: newPayment?._id },
+//         });
+//         res.json({
+//           status: true,
+//           message: "Payment verified, user updated",
+//           updatedUser,
+//         });
+//       }
+//       if (subscriptionPlan === "Premium") {
+//         // * update the user
+//         const updatedUser = await User.findByIdAndUpdate(userId, {
+//           subscriptionPlan,
+//           trialPeriod: 0,
+//           nextBillingDate: calculateNextBillingDate(),
+//           apiRequestCount: 0,
+//           monthlyRequestCount: 100,
+//           subscriptionPlan: "Premium",
+//           $addToSet: { payments: newPayment?._id },
+//         });
+//         res.json({
+//           status: true,
+//           message: "Payment verified, user updated",
+//           updatedUser,
+//         });
+//       }
+//     }
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({ error });
+//   }
+// });
+
+//* ==== verify payment-2
+
 const verifyPayment = asyncHandler(async (req, res) => {
   const { paymentId } = req.params;
   try {
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentId);
-
-    if (paymentIntent.status === "succeeded") {
+    // console.log(paymentIntent)
+    if (paymentIntent.status !== "succeeded") {
+      // get the info metatdata
       const metadata = paymentIntent?.metadata;
       const subscriptionPlan = metadata?.subscriptionPlan;
       const userEmail = metadata?.userEmail;
-      const userId = metadata?.userId;
-
-      // * find the user
-      const userFound = await User.findById(userId);
-      console.log(userFound);
+      const userId = metadata?.id;
+      //* user exist
+      const userFound = User.findById(userId);
       if (!userFound) {
         return res.status(404).json({
           status: "false",
@@ -63,57 +144,24 @@ const verifyPayment = asyncHandler(async (req, res) => {
         });
       }
 
-      //* Get the payment detail
+      //* Get payment detaisl
       const amount = paymentIntent?.amount / 100;
       const currency = paymentIntent?.currency;
       const paymentId = paymentIntent?.id;
-      //** creat payment history
 
-      const newPayment = await Payment.create({
+      //* create payment history;
+      const newPayment =  await Payment.create({
         user: userId,
         email: userEmail,
         subscriptionPlan,
         amount,
         currency,
-        status: "success",
-        reference: paymentId,
-      });
-
-      //* check for subscription
-
-      if (subscriptionPlan === "Basic") {
-        // * update the user
-        const updatedUser = await User.findByIdAndUpdate(userId, {
-          subscriptionPlan,
-          trialPeriod: 0,
-          nextBillingDate: calculateNextBillingDate(),
-          apiRequestCount: 0,
-          monthlyRequestCount: 50,
-          subscriptionPlan: "Basic",
-          $addToSet: { payments: newPayment?._id },
-        });
-        res.json({
-          status: true,
-          message: "Payment verified, user updated",
-          updatedUser,
-        });
-      }
-      if (subscriptionPlan === "Premium") {
-        // * update the user
-        const updatedUser = await User.findByIdAndUpdate(userId, {
-          subscriptionPlan,
-          trialPeriod: 0,
-          nextBillingDate: calculateNextBillingDate(),
-          apiRequestCount: 0,
-          monthlyRequestCount: 100,
-          subscriptionPlan: "Premium",
-          $addToSet: { payments: newPayment?._id },
-        });
-        res.json({
-          status: true,
-          message: "Payment verified, user updated",
-          updatedUser,
-        });
+        status,
+        reference: paymentId
+      })
+      //* check for subscription paln 
+      if(subscriptionPlan === 'Basic') {
+        
       }
     }
   } catch (error) {
