@@ -129,14 +129,14 @@ const verifyPayment = asyncHandler(async (req, res) => {
   try {
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentId);
     // console.log(paymentIntent)
-    if (paymentIntent.status !== "succeeded") {
+    if (paymentIntent.status === "succeeded") {
       // get the info metatdata
       const metadata = paymentIntent?.metadata;
       const subscriptionPlan = metadata?.subscriptionPlan;
       const userEmail = metadata?.userEmail;
       const userId = metadata?.id;
       //* user exist
-      const userFound = User.findById(userId);
+      const userFound = await User.findById(userId);
       if (!userFound) {
         return res.status(404).json({
           status: "false",
@@ -156,7 +156,7 @@ const verifyPayment = asyncHandler(async (req, res) => {
         subscriptionPlan,
         amount,
         currency,
-        status: 'success',
+        status: "success",
         reference: paymentId,
       });
       //* check for subscription paln
@@ -169,15 +169,12 @@ const verifyPayment = asyncHandler(async (req, res) => {
           monthlyRequestCount: 50,
           subscriptionPlan: "Basic",
           $addToSet: { payments: newPayment?._id },
-          
-        },
-        {new: true}
-        );
+        });
         res.json({
           status: true,
           message: "Payment verified, user updated",
-          updatedUser
-        })
+          updatedUser,
+        });
       }
       //* check for subscription premium plan
       if (subscriptionPlan === "Premium") {
@@ -189,14 +186,12 @@ const verifyPayment = asyncHandler(async (req, res) => {
           monthlyRequestCount: 100,
           subscriptionPlan: "Premium",
           $addToSet: { payments: newPayment?._id },
-        },
-        {new: true}
-        );
+        });
         res.json({
           status: true,
           message: "Payment verified, user updated",
-          updatedUser
-        })
+          updatedUser,
+        });
       }
     }
   } catch (error) {
