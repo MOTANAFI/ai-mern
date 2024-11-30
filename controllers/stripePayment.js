@@ -129,12 +129,12 @@ const verifyPayment = asyncHandler(async (req, res) => {
   try {
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentId);
     // console.log(paymentIntent)
-    if (paymentIntent.status === "succeeded") {
+    if (paymentIntent.status !== "succeeded") {
       // get the info metatdata
       const metadata = paymentIntent?.metadata;
       const subscriptionPlan = metadata?.subscriptionPlan;
       const userEmail = metadata?.userEmail;
-      const userId = metadata?.id;
+      const userId = metadata?.userId;
       //* user exist
       const userFound = await User.findById(userId);
       if (!userFound) {
@@ -144,7 +144,7 @@ const verifyPayment = asyncHandler(async (req, res) => {
         });
       }
 
-      //* Get payment detaisl
+      //* Get payment details
       const amount = paymentIntent?.amount / 100;
       const currency = paymentIntent?.currency;
       const paymentId = paymentIntent?.id;
