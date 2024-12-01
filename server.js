@@ -21,10 +21,10 @@ cron.schedule("0 0 * * * *", async () => {
   try {
     //*get the current data
     const today = new Date();
-    const updatedUser = await User.updateMany(
+     const updatedUser = await User.updateMany(
       {
         trialActive: true,
-        trialExpires: {$lt: today}
+        trialExires: {$lt: today}
       },
       {
         trialActive: false,
@@ -32,12 +32,11 @@ cron.schedule("0 0 * * * *", async () => {
         monthlyRequestCount: 5
       }
     );
-    console.log(updatedUser);
+    console.log(updatedUser)
   } catch (error) {
     console.log(error)
   }
 });
-
 
 //* crone for the free plan : runs in the end of every month
 cron.schedule("0 0 1 * * *", async () => {
@@ -47,7 +46,7 @@ cron.schedule("0 0 1 * * *", async () => {
       const updatedUser = await User.updateMany(
         {
           subscriptionPlan: "Free",
-          trialExpires: {$lt: today}
+          nextBillingDate: {$lt: today}
         },
         {
           
@@ -55,6 +54,46 @@ cron.schedule("0 0 1 * * *", async () => {
         }
       );
       console.log(updatedUser);
+    } catch (error) {
+      console.log(error)
+    }
+  });
+  //* Cron for the Basic plan: run at the end of every month
+  cron.schedule("0 0 1 * * *", async () => {
+    try {
+      //*get the current data
+      const today = new Date();
+       await User.updateMany(
+        {
+          subscriptionPlan: "Baic",
+          nextBillingDate: {$lt: today}
+        },
+        {
+          
+          monthlyRequestCount: 0
+        }
+      );
+      
+    } catch (error) {
+      console.log(error)
+    }
+  });
+  //* Cron for the Premium plan:  runs at the end of every month
+  cron.schedule("0 0 1 * * *", async () => {
+    try {
+      //*get the current data
+      const today = new Date();
+     await User.updateMany(
+        {
+          subscriptionPlan: "Premium",
+          nextBillingDate: {$lt: today}
+        },
+        {
+          
+          monthlyRequestCount: 0
+        }
+      );
+      
     } catch (error) {
       console.log(error)
     }
