@@ -73,7 +73,6 @@ const login = asyncHandler(async (req, res) => {
       expiresIn: "3d", // Token expires in 3 days
     }
   );
-  console.log(token)
 
   //* set token into cookie (http only)
   res.cookie("token", token, {
@@ -96,32 +95,35 @@ const login = asyncHandler(async (req, res) => {
 //*------ Logout -----
 
 const logout = asyncHandler(async (req, res) => {
-  res.cookie("token", "", {maxAge: 1});
+  res.cookie("token", "", { maxAge: 1 });
   res.status(200).json({
-    message: "Logged out successfully"
-  })
+    message: "Logged out successfully",
+  });
 });
 
 //* --- profile
 const userProfile = asyncHandler(async (req, res) => {
   // const id = "673d8cff9608781c6bb7158b"
-  
-  const user = await User.findById(req?.user?.id).select("-password").populate("payments");
-  if(user) {
+
+  const user = await User.findById(req?.user?.id)
+    .select("-password")
+    .populate("payments")
+    .populate("history");
+  if (user) {
     res.status(200).json({
       status: "Sucess",
-      user
-    })
+      user,
+    });
   } else {
-    res.status(404)
-    throw new Error("User not found")
+    res.status(404);
+    throw new Error("User not found");
   }
-})
+});
 //*------ Check user Auth Status -----
 
 module.exports = {
   register,
   login,
   logout,
-  userProfile
+  userProfile,
 };

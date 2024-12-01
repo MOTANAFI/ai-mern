@@ -10,11 +10,11 @@ const checkApiReqLimit = asyncHandler(async(req, res, next) => {
     }
     //* find user
     const user = await User.findById(req?.user?.id);
-    if(!user) res.status(404).json({message: "User not Found"})
-    let requestLimit = 0;
+    if(!user) return res.status(404).json({message: "User not Found"})
+    let requestLimit = user?.monthlyRequestCount || 0;
 //*check if the user is on trail period
 if(user?.trialActive){
-    requestLimit = user?.monthlyRequestCount
+    requestLimit = user?.monthlyRequestCount || 5
 }
 // check if the user has exceeded his/her monthly request or not
 if(user?.apiRequestCount >= requestLimit) {

@@ -21,7 +21,7 @@ cron.schedule("0 0 * * * *", async () => {
   try {
     //*get the current data
     const today = new Date();
-     const updatedUser = await User.updateMany(
+      await User.updateMany(
       {
         trialActive: true,
         trialExires: {$lt: today}
@@ -32,7 +32,7 @@ cron.schedule("0 0 * * * *", async () => {
         monthlyRequestCount: 5
       }
     );
-    console.log(updatedUser)
+    
   } catch (error) {
     console.log(error)
   }
@@ -43,7 +43,7 @@ cron.schedule("0 0 1 * * *", async () => {
     try {
       //*get the current data
       const today = new Date();
-      const updatedUser = await User.updateMany(
+       await User.updateMany(
         {
           subscriptionPlan: "Free",
           nextBillingDate: {$lt: today}
@@ -53,7 +53,7 @@ cron.schedule("0 0 1 * * *", async () => {
           monthlyRequestCount: 0
         }
       );
-      console.log(updatedUser);
+      
     } catch (error) {
       console.log(error)
     }
