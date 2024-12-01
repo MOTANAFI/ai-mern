@@ -60,10 +60,7 @@ const userSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
-// addign virtuals
-userSchema.virtual("isTrialActive").get(function () {
-  return this.trialActive && new Date() < this.trialExpires;
-});
+
 
 //! Compile to form the model
 
