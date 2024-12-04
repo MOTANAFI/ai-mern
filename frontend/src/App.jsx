@@ -1,14 +1,12 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Registration from "./components/Users/Register";
 
-const Home = () => {
-  return <h1>Home pages</h1>;
-};
 export default function App() {
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/register" element={<Registration />} />
         </Routes>
       </BrowserRouter>
     </>
