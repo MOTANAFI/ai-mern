@@ -1,6 +1,7 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const cron = require("node-cron");
+const cors = require("cors")
 require("dotenv").config();
 const usersRouter = require("./routes/usersRouter");
 const { errorHandler } = require("./middlewares/errorMiddleware");
@@ -104,6 +105,15 @@ cron.schedule("0 0 1 * * *", async () => {
 
 app.use(express.json());
 app.use(cookieParser()); //* pass cooke automatically
+const corsOpions = {
+  origin: 'http://localhost:5173',
+  credentails: true,
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // Allowed methods
+  preflightContinue: false,       // Stop after preflight response
+  optionsSuccessStatus: 204, 
+}
+app.use(cors(corsOpions))
+
 
 //*=== Routes ====
 
