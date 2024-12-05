@@ -1,7 +1,7 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const cron = require("node-cron");
-const cors = require("cors")
+const cors = require("cors");
 require("dotenv").config();
 const usersRouter = require("./routes/usersRouter");
 const { errorHandler } = require("./middlewares/errorMiddleware");
@@ -22,99 +22,88 @@ cron.schedule("0 0 * * * *", async () => {
   try {
     //*get the current data
     const today = new Date();
-      await User.updateMany(
+    await User.updateMany(
       {
         trialActive: true,
-        trialExires: {$lt: today}
+        trialExires: { $lt: today },
       },
       {
         trialActive: false,
         subscriptionPlan: "Free",
-        monthlyRequestCount: 5
+        monthlyRequestCount: 5,
       }
     );
-    
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
 //* crone for the free plan : runs in the end of every month
 cron.schedule("0 0 1 * * *", async () => {
-    try {
-      //*get the current data
-      const today = new Date();
-       await User.updateMany(
-        {
-          subscriptionPlan: "Free",
-          nextBillingDate: {$lt: today}
-        },
-        {
-          
-          monthlyRequestCount: 0
-        }
-      );
-      
-    } catch (error) {
-      console.log(error)
-    }
-  });
-  //* Cron for the Basic plan: run at the end of every month
-  cron.schedule("0 0 1 * * *", async () => {
-    try {
-      //*get the current data
-      const today = new Date();
-       await User.updateMany(
-        {
-          subscriptionPlan: "Baic",
-          nextBillingDate: {$lt: today}
-        },
-        {
-          
-          monthlyRequestCount: 0
-        }
-      );
-      
-    } catch (error) {
-      console.log(error)
-    }
-  });
-  //* Cron for the Premium plan:  runs at the end of every month
-  cron.schedule("0 0 1 * * *", async () => {
-    try {
-      //*get the current data
-      const today = new Date();
-     await User.updateMany(
-        {
-          subscriptionPlan: "Premium",
-          nextBillingDate: {$lt: today}
-        },
-        {
-          
-          monthlyRequestCount: 0
-        }
-      );
-      
-    } catch (error) {
-      console.log(error)
-    }
-  });
+  try {
+    //*get the current data
+    const today = new Date();
+    await User.updateMany(
+      {
+        subscriptionPlan: "Free",
+        nextBillingDate: { $lt: today },
+      },
+      {
+        monthlyRequestCount: 0,
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+});
+//* Cron for the Basic plan: run at the end of every month
+cron.schedule("0 0 1 * * *", async () => {
+  try {
+    //*get the current data
+    const today = new Date();
+    await User.updateMany(
+      {
+        subscriptionPlan: "Baic",
+        nextBillingDate: { $lt: today },
+      },
+      {
+        monthlyRequestCount: 0,
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+});
+//* Cron for the Premium plan:  runs at the end of every month
+cron.schedule("0 0 1 * * *", async () => {
+  try {
+    //*get the current data
+    const today = new Date();
+    await User.updateMany(
+      {
+        subscriptionPlan: "Premium",
+        nextBillingDate: { $lt: today },
+      },
+      {
+        monthlyRequestCount: 0,
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+});
 //* crone paid plan
 
 //* --- middleware --
 
 app.use(express.json());
 app.use(cookieParser()); //* pass cooke automatically
-const corsOpions = {
-  origin: 'http://localhost:5173',
-  credentails: true,
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // Allowed methods
-  preflightContinue: false,       // Stop after preflight response
-  optionsSuccessStatus: 204, 
-}
-app.use(cors(corsOpions))
-
-
+const corsOptions = {
+  origin: "http://localhost:5173", // Remove trailing slash
+  credentials: true, // Fix typo: "credentails" to "credentials"
+  optionsSuccessStatus: 200, // Fix typo: "optionSuccessStatus" to "optionsSuccessStatus"
+};
+app.use(cors(corsOptions));
 //*=== Routes ====
 
 app.use("/api/v1/users", usersRouter);
