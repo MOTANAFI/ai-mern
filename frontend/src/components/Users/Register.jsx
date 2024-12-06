@@ -33,11 +33,14 @@ const Registration = () => {
       // console.log("Form values", values);
       mutation.mutate(values)
       // Simulate successful registration
-      // navigate("/login"); // Redirect user to login page
+      navigate("/login"); // Redirect user to login page
     },
   });
 
-  console.log(mutation)
+  console.log(mutation.isSuccess)
+  console.log(mutation.isPending)
+  console.log(mutation.isError)
+  console.log(mutation.error)
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900">
