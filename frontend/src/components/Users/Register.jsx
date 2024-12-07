@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 // import StatusMessage from "../Alert/StatusMessage";
 import { useMutation } from "@tanstack/react-query";
 import { registerAPI } from "../../apis/user/usersAPI";
+import StatusMessage from "./Alert/StatusMessage";
 
 // Validation schema
 const validationSchema = Yup.object({
@@ -18,7 +19,7 @@ const validationSchema = Yup.object({
 const Registration = () => {
   // const navigate = useNavigate();
   // mutation
-  const mutation = useMutation({mutationFn: registerAPI})
+  const mutation = useMutation({ mutationFn: registerAPI });
 
   // Formik setup for form handling
   const formik = useFormik({
@@ -31,16 +32,16 @@ const Registration = () => {
     onSubmit: (values) => {
       // Here, handle the form submission
       // console.log("Form values", values);
-      mutation.mutate(values)
-      // Simulate successful registration
-      navigate("/login"); // Redirect user to login page
+      mutation.mutate(values, {
+        onSuccess: () => {
+          setTimeout(() => {
+            // Simulate successful registration
+            navigate("/login"); // Redirect user to login page
+          }, 5000);
+        },
+      });
     },
   });
-
-  console.log(mutation.isSuccess)
-  console.log(mutation.isPending)
-  console.log(mutation.isError)
-  console.log(mutation.error)
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900">
@@ -52,6 +53,19 @@ const Registration = () => {
           Create an account to get free access for 3 days. No credit card
           required.
         </p>
+        {/* display loading  */}
+        {mutation.isPending && (
+          <StatusMessage type="loading" message="loading.." />
+        )}
+        {mutation.isError && (
+          <StatusMessage
+            type="error"
+            message={mutation?.error?.response?.data?.message}
+          />
+        )}
+        {mutation.isSuccess && (
+          <StatusMessage type="success" message="Registration success" />
+        )}
 
         <form onSubmit={formik.handleSubmit} className="space-y-6">
           {/* Username input field */}
