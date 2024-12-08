@@ -53,7 +53,7 @@ const Registration = () => {
           Create an account to get free access for 3 days. No credit card
           required.
         </p>
-        {/* display loading  */}
+        {/* display loading states */}
         {mutation.isPending && (
           <StatusMessage type="loading" message="loading.." />
         )}
