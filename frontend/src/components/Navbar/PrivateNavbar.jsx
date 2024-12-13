@@ -5,6 +5,9 @@ import { PlusIcon } from "@heroicons/react/20/solid";
 import { FiLogOut } from "react-icons/fi";
 import { FaCreativeCommonsShare } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { logoutUserApi } from "../../apis/user/usersAPI";
+import { useAuth } from "../../AuthContext/AuthContext";
 
 const user = {
   name: "Tom Cook",
@@ -21,8 +24,14 @@ function classNames(...classes) {
 }
 
 export default function PrivateNavbar() {
+  //auth custom hook
+  const {logout} = useAuth()
+  const mutation = useMutation({mutationFn:logoutUserApi})
   //handle logout
-  const handleLogout = () => {};
+  const handleLogout = () => {
+    mutation.mutate()
+    logout()
+  };
 
   return (
     <Disclosure as="nav" className="bg-gray-900">

@@ -36,9 +36,22 @@ export const loginAPI = async (userData) => {
 };
 
 //=========Check Auth
-export const checkUserAuthStatusApi = async (userData) => {
+export const checkUserAuthStatusApi = async () => {
   const response = await axios.get(
     "http://localhost:5000/api/v1/users/auth/check",
+    {
+      withCredentials: true,
+    }
+  );
+  console.log("api response", response?.data);
+  return response?.data;
+};
+
+//========= user logout
+export const logoutUserApi = async () => {
+  const response = await axios.post(
+    "http://localhost:5000/api/v1/users/logout",
+    {},
     {
       withCredentials: true,
     }

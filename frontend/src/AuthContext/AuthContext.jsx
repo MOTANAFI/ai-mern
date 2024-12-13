@@ -12,8 +12,9 @@ export const AuthProvider = ({ children }) => {
   });
   //update the authenticated user
   useEffect(() => {
-    setisAuthenticated(true);
-  }, [data]);
+    if(isSuccess)
+    setisAuthenticated(data);
+  }, [data, isSuccess]);
   //update the user auth after login
 
   const login = () => {
