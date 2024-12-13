@@ -2,9 +2,10 @@ import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
-import {useMutation} from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query";
 import { loginAPI } from "../../apis/user/usersAPI";
 import StatusMessage from "./Alert/StatusMessage";
+import { useAuth } from "../../AuthContext/AuthContext";
 
 // Validation schema using Yup
 const validationSchema = Yup.object({
@@ -16,9 +17,11 @@ const validationSchema = Yup.object({
 
 const Login = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+  console.log(isAuthenticated);
 
   //*mutation
-  const mutation = useMutation({mutationFn: loginAPI})
+  const mutation = useMutation({ mutationFn: loginAPI });
 
   // Formik setup for form handling
   const formik = useFormik({
@@ -29,7 +32,7 @@ const Login = () => {
     validationSchema: validationSchema,
     onSubmit: (values) => {
       // Here, you would typically handle form submission
-       mutation.mutate(values)
+      mutation.mutate(values);
       // Simulate login success and navigate to dashboard
       // navigate("/dashboard");
     },
