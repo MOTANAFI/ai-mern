@@ -16,9 +16,15 @@ const validationSchema = Yup.object({
 });
 
 const Login = () => {
-  const navigate = useNavigate();
   const { isAuthenticated, login } = useAuth();
-  console.log(isAuthenticated);
+  const navigate = useNavigate();
+
+  //Redireact if user is logged in
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    }
+  }, [isAuthenticated]);
 
   //*mutation
   const mutation = useMutation({ mutationFn: loginAPI });

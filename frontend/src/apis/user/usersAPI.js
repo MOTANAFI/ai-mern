@@ -2,7 +2,7 @@
 
 import axios from "axios";
 
-//*  User registration 
+//*  User registration
 export const registerAPI = async (userData) => {
   const response = await axios.post(
     "http://localhost:5000/api/v1/users/register",
@@ -15,7 +15,7 @@ export const registerAPI = async (userData) => {
       withCredentials: true,
     }
   );
-  console.log("api response", response?.data);
+
   return response?.data;
 };
 
@@ -31,7 +31,6 @@ export const loginAPI = async (userData) => {
       withCredentials: true,
     }
   );
-  console.log("api response", response?.data);
   return response?.data;
 };
 
@@ -43,7 +42,6 @@ export const checkUserAuthStatusApi = async () => {
       withCredentials: true,
     }
   );
-  console.log("api response", response?.data);
   return response?.data;
 };
 
@@ -56,6 +54,5 @@ export const logoutUserApi = async () => {
       withCredentials: true,
     }
   );
-  console.log("api response", response?.data);
   return response?.data;
 };
