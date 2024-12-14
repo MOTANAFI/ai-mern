@@ -24,10 +24,13 @@ const Login = () => {
     if (isAuthenticated) {
       navigate("/dashboard");
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, navigate]);
 
   //*mutation
-  const mutation = useMutation({ mutationFn: loginAPI });
+  const mutation = useMutation({
+    mutationFn: loginAPI,
+    onSuccess: () => login(),
+  });
 
   // Formik setup for form handling
   const formik = useFormik({
@@ -45,11 +48,6 @@ const Login = () => {
       }, 5000);
     },
   });
-  useEffect(() => {
-    if (mutation.isSuccess) {
-      login();
-    }
-  }, [mutation.isSuccess]);
 
   return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center">
