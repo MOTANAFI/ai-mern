@@ -159,7 +159,7 @@ const verifyPayment = asyncHandler(async (req, res) => {
         status: "success",
         reference: paymentId,
       });
-      //* check for subscription paln
+      //* check for subscription plan
       if (subscriptionPlan === "Basic") {
         const updatedUser = await User.findByIdAndUpdate(userId, {
           subscriptionPlan,
