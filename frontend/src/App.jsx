@@ -7,6 +7,7 @@ import PrivateNavbar from "./components/Navbar/PrivateNavbar";
 import Home from "./components/Home/Home";
 import { useAuth } from "./AuthContext/AuthContext";
 import AuthRoute from "./AuthRoute/AuthRoute";
+import BlogPostAIAssistant from "./components/ContentGeneration/ContentGeneration";
 
 export default function App() {
   const { isAuthenticated } = useAuth();
@@ -24,6 +25,14 @@ export default function App() {
             element={
               <AuthRoute>
                 <Dashboard />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/generate-content"
+            element={
+              <AuthRoute>
+                <BlogPostAIAssistant />
               </AuthRoute>
             }
           />

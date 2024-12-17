@@ -2,9 +2,23 @@ import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Link } from "react-router-dom";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getUserProfileApi } from "../../apis/user/usersAPI";
+import StatusMessage from "../Users/Alert/StatusMessage";
+import { generateContentAPI } from "../../apis/chatGPT/chatGPT";
 
 const BlogPostAIAssistant = () => {
   const [generatedContent, setGeneratedContent] = useState("");
+
+  const { isLoading, isError, data, error } = useQuery({
+    queryFn: getUserProfileApi,
+    queryKey: ["profile"],
+  });
+
+  const mutation = useMutation({ mutationFn: generateContentAPI });
+
+  const creditRemaining =
+    data?.user?.monthlyRequestCount - data?.user?.apiRequestCount;
 
   // Formik setup for handling form data
   const formik = useFormik({
@@ -20,10 +34,24 @@ const BlogPostAIAssistant = () => {
     }),
     onSubmit: (values) => {
       // Simulate content generation based on form values
-      console.log(values);
-      setGeneratedContent(`Generated content for prompt: ${values.prompt}`);
+      mutation.mutate(
+        `Generate a blog post based ${values.prompt}, ${values.category}, ${values.tone}`
+      );
+      setGeneratedContent(`Generated content for prompt: ${mutation?.data}`);
     },
   });
+
+  console.log(mutation);
+
+  // display loading
+  if (isLoading) {
+    return <StatusMessage type="loading" message="Loading please wait..." />;
+  }
+  if (isLoading) {
+    return (
+      <StatusMessage type="error" message={error?.response.data?.message} />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-900 flex justify-center items-center p-6">
@@ -31,9 +59,37 @@ const BlogPostAIAssistant = () => {
         <h2 className="text-3xl font-extrabold text-gray-800 mb-6 text-center">
           AI Blog Post Generator
         </h2>
+        {/* Loading */}
+        {mutation.isPending && (
+          <StatusMessage type="loading" message="Loading please wait..." />
+        )}
+        {mutation.isSuccess && (
+          <StatusMessage
+            type="success"
+            message="Content generated successfully"
+          />
+        )}
+        {mutation.isError && (
+          <StatusMessage
+            type="error"
+            message={mutation?.error?.response?.data?.message}
+          />
+        )}
 
         {/* Static display for Plan and Credits */}
-        {/* ... */}
+        <div className="flex mt-2">
+          <div className="mr-2 mb-2">
+            <span className="text-sm font-semibold bg-green-200 px-4 py-2 rounded-full">
+              plan: {data?.user?.subscriptionPlan}
+            </span>
+          </div>
+
+          <div className="mr-2 mb-2">
+            <span className="text-sm font-semibold bg-green-200 px-4 py-2 rounded-full">
+              Credit: {creditRemaining}
+            </span>
+          </div>
+        </div>
 
         {/* Form for generating content */}
         <form onSubmit={formik.handleSubmit} className="space-y-4">

@@ -29,7 +29,7 @@ const Registration = () => {
       timeoutId = setTimeout(() => {
         console.log("Navigating to dashboard")
         navigate("/dashboard");
-      }, 5000);
+      }, 2000);
     }
     return () => clearTimeout(timeoutId);
   }, [isAuthenticated, navigate]);

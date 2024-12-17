@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, {  useLayoutEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
@@ -20,7 +20,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   //Redireact if user is logged in
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isAuthenticated) {
       navigate("/dashboard");
     }
@@ -85,6 +85,7 @@ const Login = () => {
               {...formik.getFieldProps("email")}
               className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400 focus:outline-none focus:border-indigo-500"
               placeholder="you@example.com"
+              autoComplete="email"
             />
             {formik.touched.email && formik.errors.email && (
               <div className="text-red-500 mt-1">{formik.errors.email}</div>
@@ -104,6 +105,7 @@ const Login = () => {
               id="password"
               {...formik.getFieldProps("password")}
               className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400 focus:outline-none focus:border-indigo-500"
+              autoComplete="current-password"
             />
             {formik.touched.password && formik.errors.password && (
               <div className="text-red-500 mt-1">{formik.errors.password}</div>
