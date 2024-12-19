@@ -50,10 +50,10 @@ const Registration = () => {
       // console.log("Form values", values);
       mutation.mutate(values, {
         onSuccess: () => {
-          setTimeout(() => {
+        
             // Simulate successful registration
             navigate("/login"); // Redirect user to login page
-          }, 5000);
+        
         },
       });
     },

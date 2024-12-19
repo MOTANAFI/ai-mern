@@ -21,6 +21,7 @@ const Login = () => {
 
   //Redireact if user is logged in
   useLayoutEffect(() => {
+    console.log("isAuthenticated:", isAuthenticated);
     if (isAuthenticated) {
       navigate("/dashboard");
     }
@@ -43,9 +44,9 @@ const Login = () => {
       // Here, you would typically handle form submission
       mutation.mutate(values);
       // Simulate login success and navigate to dashboard
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 5000);
+      navigate("/dashboard")
+    
+  
     },
   });
 
