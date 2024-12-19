@@ -8,6 +8,7 @@ import Home from "./components/Home/Home";
 import { useAuth } from "./AuthContext/AuthContext";
 import AuthRoute from "./AuthRoute/AuthRoute";
 import BlogPostAIAssistant from "./components/ContentGeneration/ContentGeneration";
+import Plans from "./components/Plans/Plan";
 
 export default function App() {
   const { isAuthenticated } = useAuth();
@@ -37,6 +38,7 @@ export default function App() {
             }
           />
           <Route path="/" element={<Home />} />
+          <Route path="/plans" element={<Plans />} />
         </Routes>
       </BrowserRouter>
     </>

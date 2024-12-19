@@ -17,8 +17,6 @@ const BlogPostAIAssistant = () => {
 
   const mutation = useMutation({ mutationFn: generateContentAPI });
 
-  const creditRemaining =
-    data?.user?.monthlyRequestCount - data?.user?.apiRequestCount;
 
   // Formik setup for handling form data
   const formik = useFormik({
@@ -86,7 +84,7 @@ const BlogPostAIAssistant = () => {
 
           <div className="mr-2 mb-2">
             <span className="text-sm font-semibold bg-green-200 px-4 py-2 rounded-full">
-              Credit: {creditRemaining}
+              Credit: {data?.user?.apiRequestCount} / {" "} {data?.user?.monthlyRequestCount}
             </span>
           </div>
         </div>
