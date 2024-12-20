@@ -236,7 +236,7 @@ const freeSubscription = asyncHandler(async (req, res) => {
     } else {
       return res
         .status(403)
-        .json({ error: "Subscription nenewal not due yet" });
+        .json({ error: "Subscription renewal not due yet" });
     }
   } catch (error) {
     console.log(error);
