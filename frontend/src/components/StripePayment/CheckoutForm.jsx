@@ -7,6 +7,7 @@ import {
 import { useParams, useSearchParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { createStripePaymentIntentAPI } from "../../apis/stripePayment/stripePayment";
+import StatusMessage from "../Users/Alert/StatusMessage";
 
 const CheckoutForm = () => {
   const [errorMessage, setErrorMessage] = useState(null);
@@ -59,13 +60,20 @@ const CheckoutForm = () => {
       >
         <div className="mb-4">
           <PaymentElement />
+          </div>
+          {/* Display loading */}
+          {mutation?.isLoading && <StatusMessage type='loading' message="Porcessing please wait" />}
+          {/* sucess */}
+          {mutation?.isSuccess && <StatusMessage type='sucess' message="Payment successfull" />}
+          {/* error */}
+          {mutation?.isError && <StatusMessage type='sucess' message={mutation?.error?.response?.data?.error} />}
           <button className="-mediuw-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm fontm text-white bg-gradient-to-r from-purple-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
             Pay
           </button>
           {errorMessage && (
             <div className="text-red-500 mt-4">{errorMessage}</div>
           )}
-        </div>
+        
       </form>
     </div>
   );

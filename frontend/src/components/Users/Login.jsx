@@ -1,4 +1,4 @@
-import React, {  useLayoutEffect } from "react";
+import React, { useEffect, useLayoutEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
@@ -17,22 +17,16 @@ const validationSchema = Yup.object({
 
 const Login = () => {
   const { isAuthenticated, login } = useAuth();
+  
   const navigate = useNavigate();
-
-  //Redireact if user is logged in
-  useLayoutEffect(() => {
-    console.log("isAuthenticated:", isAuthenticated);
+  //Redirect if a user is login
+  useEffect(() => {
     if (isAuthenticated) {
       navigate("/dashboard");
     }
-  }, [isAuthenticated, navigate]);
-
-  //*mutation
-  const mutation = useMutation({
-    mutationFn: loginAPI,
-    onSuccess: () => login(),
-  });
-
+  }, [isAuthenticated]);
+  //mutation
+  const mutation = useMutation({ mutationFn: loginAPI });
   // Formik setup for form handling
   const formik = useFormik({
     initialValues: {
@@ -42,13 +36,21 @@ const Login = () => {
     validationSchema: validationSchema,
     onSubmit: (values) => {
       // Here, you would typically handle form submission
+
       mutation.mutate(values);
+
       // Simulate login success and navigate to dashboard
-      navigate("/dashboard")
-    
-  
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 5000);
     },
   });
+  //Update is authenticated
+  useEffect(() => {
+    if (mutation.isSuccess) {
+      login();
+    }
+  }, [mutation.isSuccess]);
 
   return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center">
