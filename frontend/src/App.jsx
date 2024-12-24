@@ -11,6 +11,7 @@ import BlogPostAIAssistant from "./components/ContentGeneration/ContentGeneratio
 import Plans from "./components/Plans/Plan";
 import FreePlanSignup from "./components/StripePayment/FreePlanSignup";
 import CheckoutForm from "./components/StripePayment/CheckoutForm";
+import PaymentSuccess from "./components/StripePayment/PaymentSuccess";
 
 export default function App() {
   const { isAuthenticated } = useAuth();
@@ -43,6 +44,7 @@ export default function App() {
           <Route path="/plans" element={<Plans />} />
           <Route path="/free-plan" element={<FreePlanSignup />} />
           <Route path="/checkout/:plan" element={<CheckoutForm />} />
+          <Route path="/success" element={<PaymentSuccess />} />
         </Routes>
       </BrowserRouter>
     </>
