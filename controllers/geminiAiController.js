@@ -11,7 +11,7 @@ const genAIController = asyncHandler(async (req, res) => {
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
   // const prompt = "write a story about a magic backpack"
 
-  const result = await model.generateContent({prompt, maxContents: 10});
+  const result = await model.generateContent( prompt );
   const response = result.response;
   const content = response?.text().trim();
 

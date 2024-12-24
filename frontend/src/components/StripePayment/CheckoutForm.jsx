@@ -35,17 +35,19 @@ const CheckoutForm = () => {
         plan,
       };
       // make the http request
-      mutation.mutateAsync(data);
-      console.log(mutation);
-      const { error } = await stripe.confirmPayment({
-        elements,
-        clientSecret: mutation?.data?.clientSecret,
-        confirmParams: {
-          return_url: "http://localhost:5173/success",
-        },
-      });
-      if (error) {
-        setErrorMessage(error.message);
+      mutation.mutate(data);
+
+      if (mutation?.isSuccess) {
+        const { error } = await stripe.confirmPayment({
+          elements,
+          clientSecret: mutation?.data?.clientSecret,
+          confirmParams: {
+            return_url: "http://localhost:5173/success",
+          },
+        });
+        if (error) {
+          setErrorMessage(error.message);
+        }
       }
     } catch (error) {
       setErrorMessage(error.message);
@@ -60,20 +62,25 @@ const CheckoutForm = () => {
       >
         <div className="mb-4">
           <PaymentElement />
-          </div>
-          {/* Display loading */}
-          {mutation?.isLoading && <StatusMessage type='loading' message="Porcessing please wait" />}
-          {/* sucess */}
-          {mutation?.isSuccess && <StatusMessage type='sucess' message="Payment successfull" />}
-          {/* error */}
-          {mutation?.isError && <StatusMessage type='sucess' message={mutation?.error?.response?.data?.error} />}
-          <button className="-mediuw-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm fontm text-white bg-gradient-to-r from-purple-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-            Pay
-          </button>
-          {errorMessage && (
-            <div className="text-red-500 mt-4">{errorMessage}</div>
-          )}
-        
+        </div>
+        {/* Display loading */}
+        {mutation?.isLoading && (
+          <StatusMessage type="loading" message="Porcessing please wait" />
+        )}
+
+        {/* error */}
+        {mutation?.isError && (
+          <StatusMessage
+            type="sucess"
+            message={mutation?.error?.response?.data?.error}
+          />
+        )}
+        <button className="-mediuw-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm fontm text-white bg-gradient-to-r from-purple-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Pay
+        </button>
+        {errorMessage && (
+          <div className="text-red-500 mt-4">{errorMessage}</div>
+        )}
       </form>
     </div>
   );
