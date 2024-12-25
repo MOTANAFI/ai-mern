@@ -14,6 +14,8 @@ const genAIController = asyncHandler(async (req, res) => {
   const result = await model.generateContent( prompt );
   const response = result.response;
   const content = response?.text().trim();
+  // const content = response?.text()?.split("\n").map((para) => para.trim()).filter(Boolean);  
+  
 
   // create history
   const newContent = await ContentHistory.create({

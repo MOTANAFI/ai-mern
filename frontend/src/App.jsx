@@ -12,6 +12,7 @@ import Plans from "./components/Plans/Plan";
 import FreePlanSignup from "./components/StripePayment/FreePlanSignup";
 import CheckoutForm from "./components/StripePayment/CheckoutForm";
 import PaymentSuccess from "./components/StripePayment/PaymentSuccess";
+import ContentGenerationHistory from "./components/Users/ContentGenerationHistory";
 
 export default function App() {
   const { isAuthenticated } = useAuth();
@@ -40,6 +41,14 @@ export default function App() {
               </AuthRoute>
             }
           />
+            <Route
+              path="/history"
+              element={
+                <AuthRoute>
+                  <ContentGenerationHistory />
+                </AuthRoute>
+              }
+            />
           <Route path="/" element={<Home />} />
           <Route path="/plans" element={<Plans />} />
           <Route path="/free-plan" element={<FreePlanSignup />} />
