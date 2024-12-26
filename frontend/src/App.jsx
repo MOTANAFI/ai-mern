@@ -13,6 +13,8 @@ import FreePlanSignup from "./components/StripePayment/FreePlanSignup";
 import CheckoutForm from "./components/StripePayment/CheckoutForm";
 import PaymentSuccess from "./components/StripePayment/PaymentSuccess";
 import ContentGenerationHistory from "./components/Users/ContentGenerationHistory";
+import AppFeatures from "./components/AppFeaturs/AppFeatures";
+import AboutUs from "./components/About/AboutUs";
 
 export default function App() {
   const { isAuthenticated } = useAuth();
@@ -41,19 +43,42 @@ export default function App() {
               </AuthRoute>
             }
           />
-            <Route
-              path="/history"
-              element={
-                <AuthRoute>
-                  <ContentGenerationHistory />
-                </AuthRoute>
-              }
-            />
+          <Route
+            path="/history"
+            element={
+              <AuthRoute>
+                <ContentGenerationHistory />
+              </AuthRoute>
+            }
+          />
           <Route path="/" element={<Home />} />
           <Route path="/plans" element={<Plans />} />
-          <Route path="/free-plan" element={<FreePlanSignup />} />
-          <Route path="/checkout/:plan" element={<CheckoutForm />} />
-          <Route path="/success" element={<PaymentSuccess />} />
+          <Route
+            path="/free-plan"
+            element={
+              <AuthRoute>
+                <FreePlanSignup />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/checkout/:plan"
+            element={
+              <AuthRoute>
+                <CheckoutForm />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/success"
+            element={
+              <AuthRoute>
+                <PaymentSuccess />
+              </AuthRoute>
+            }
+          />
+          <Route path="/features" element={<AppFeatures />} />
+          <Route path="/about" element={<AboutUs />} />
         </Routes>
       </BrowserRouter>
     </>
