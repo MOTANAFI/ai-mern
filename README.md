@@ -71,8 +71,6 @@ npm run server
 
 ## License
 
----
-
 ### Notes:
 1. Replace `<repository-url>` with your Git repository URL.
 2. Update the `.env` section with the necessary environment variables for your app.
