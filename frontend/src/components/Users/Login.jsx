@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useMemo } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
@@ -8,24 +8,27 @@ import StatusMessage from "./Alert/StatusMessage";
 import { useAuth } from "../../AuthContext/AuthContext";
 
 // Validation schema using Yup
-const validationSchema = Yup.object({
-  email: Yup.string()
-    .email("Enter a valid email")
-    .required("Email is required"),
-  password: Yup.string().required("Password is required"),
-});
 
 const Login = () => {
   const { isAuthenticated, login } = useAuth();
   
   const navigate = useNavigate();
+  const validationSchema = useMemo(
+    () =>
+      Yup.object({
+        email: Yup.string()
+          .email("Enter a valid email")
+          .required("Email is required"),
+        password: Yup.string().required("Password is required"),
+      }),
+    []
+  );
   //Redirect if a user is login
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/dashboard");
+      navigate("/dashboard", { replace: true });
     }
-    console.log("isAuthenticated:", isAuthenticated);
-  }, [isAuthenticated]);
+  }, [isAuthenticated, navigate]);
   //mutation
   const mutation = useMutation({ mutationFn: loginAPI });
   // Formik setup for form handling
@@ -35,26 +38,33 @@ const Login = () => {
       password: "",
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      // Here, you would typically handle form submission
+    onSubmit: useCallback(
+      (values) => {
+        // Here, you would typically handle form submission
 
-      mutation.mutate(values);
+        mutation.mutate(values);
 
-      // Simulate login success and navigate to dashboard
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 5000);
-    },
+        // Simulate login success and navigate to dashboard
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 5000);
+      },
+      [mutation, navigate]
+    ),
   });
   //Update is authenticated
+  // useEffect(() => {
+  //   if (mutation.isSuccess) {
+  //     login();
+  //   }
+  //   console.log("Mutation Success:", mutation.isSuccess);
+  // }, [mutation.isSuccess, login]);
+
   useEffect(() => {
-    if (mutation.isSuccess) {
-      login();
+    if (mutation.isSuccess && !isAuthenticated) {
+      login(); // Only update if not already authenticated
     }
-    console.log("Mutation Success:", mutation.isSuccess);
-  }, [mutation.isSuccess, login]);
-
-
+  }, [mutation.isSuccess, login, isAuthenticated]);
 
   return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center">
